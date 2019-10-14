@@ -35,16 +35,21 @@ def insertFeaturesFromJSON(conn):
         features_dict = json.load(f)
 
     feature_insert = "INSERT INTO features(fname,description,level,cname) VALUES(%s,%s,%s,%s)"
+    feature_class_insert = "INSERT INTO features_learned_by_class (fname,cname,level) VALUES (%s,%s,%s)"
     cur = conn.cursor()
 
     for dnd_feature in features_dict:
-
 
         dnd_feature.get("higher_level", "n/a")
 
         record_to_insert = (dnd_feature["name"],dnd_feature["desc"],dnd_feature.get("level",'1'),dnd_feature["class"]["name"])
 
         cur.execute(feature_insert, record_to_insert)
+        conn.commit()
+
+        record_feature_class_insert = (dnd_feature["name"], dnd_feature["class"]["name"], dnd_feature.get("level",'1'))
+
+        cur.execute(feature_class_insert, record_feature_class_insert)
         conn.commit()
 
 
