@@ -30,6 +30,24 @@ def closeConnection(conn):
     conn.cursor().close()
 
 
+def insertFeaturesFromJSON(conn):
+    with open('data/5e-SRD-Features.json') as f:
+        features_dict = json.load(f)
+
+    feature_insert = "INSERT INTO features(fname,description,level,cname) VALUES(%s,%s,%s,%s)"
+    cur = conn.cursor()
+
+    for dnd_feature in features_dict:
+
+
+        dnd_feature.get("higher_level", "n/a")
+
+        record_to_insert = (dnd_feature["name"],dnd_feature["desc"],dnd_feature.get("level",'1'),dnd_feature["class"]["name"])
+
+        cur.execute(feature_insert, record_to_insert)
+        conn.commit()
+
+
 def insertSpellsFromJSON(conn):
     with open('data/5e-SRD-Spells.json') as f:
         classes_dict = json.load(f)
@@ -75,7 +93,8 @@ def insertClassesFromJSON(conn):
 if __name__ == '__main__':
     conn = connect()
     # insertClassesFromJSON(conn)
-    insertSpellsFromJSON(conn)
+    # insertSpellsFromJSON(conn)
+    insertFeaturesFromJSON(conn)
     conn.cursor().close()
     conn.close()
     print('done!')
