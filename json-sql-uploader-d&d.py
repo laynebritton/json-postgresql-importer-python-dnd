@@ -133,10 +133,12 @@ def insertSpellsFromJSON(conn):
     cur = conn.cursor()
 
     for dnd_spell in classes_dict:
-        componentString = ""
+        componentString = "{"
         for component in dnd_spell["components"]:
-            componentString += component
+            componentString += '"' + component + '",'
 
+        componentString = componentString[:-1] # Remove last comma from array string
+        componentString += "}"
         dnd_spell.get("higher_level", "n/a")
 
         record_to_insert = (
